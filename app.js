@@ -21,6 +21,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use("/user", require("./Routes/userRoute"));
 app.use("/course", require("./Routes/courseRoute"));
 app.use("/video", require("./Routes/videoRoute"));
+app.use("/access", require("./Routes/accessRoute"));
+
 
 const getIdeaFromBlockchain = async(_key) => {
     const idea = await myContract.methods.tokenURI(_key).call();
