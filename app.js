@@ -18,6 +18,7 @@ mongoose.connect(database, {useUnifiedTopology: true, useNewUrlParser: true })
 
 app.use(express.urlencoded({ extended: false }));
 app.use("/user", require("./Routes/userRoute"));
+app.use("/course", require("./Routes/courseRoute"));
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, console.log("Server started at http://localhost:" + PORT))
