@@ -6,7 +6,8 @@ var Web3 = require('web3');
 // ekdum latest : 0x8f76099ddfBE52FaF0210a5d21c5313B440c4aFd
 // usse bhi latest : 0xa2e397AE3B88357bC46DC338ca41956DDd630649
 // : 0xDBea783c04781B497f29818f28A86312d6A04088
-var smartContractAddress =  "0xDBea783c04781B497f29818f28A86312d6A04088"; // your smart contract address;
+// 0x64f6DEd1571f2b8Ed1dC51Ed804Ef3B0DcEc0821
+var smartContractAddress =  "0x64f6DEd1571f2b8Ed1dC51Ed804Ef3B0DcEc0821"; // your smart contract address;
 var smartContractABI = require("./contractAbi");
 
 const web3 = new Web3("https://api.hyperspace.node.glif.io/rpc/v1");
@@ -20,8 +21,16 @@ const getVideoAccessByToken = async(_address, _tokenId) => {
 }
 
 const getCourseNftToken = async(_address, _courseName, _tutorName) => {
-    const courseToken = await myContract.methods.createCourseNFT(_courseName, _tutorName).send({ from: _address });
-    console.log(courseToken);
+    console.log("inside getCourseNftToken function")
+    console.log(_address, _courseName, _tutorName);
+    const courseToken = await myContract.methods.createCourseNFT(_courseName, _tutorName).call({ from: _address }, (error, result) => {
+        if (error) {
+            console.error("error in getCourseNftToken : ", error);
+        } else {
+            console.log("result from callback function of createCourseNFT : ", result);
+        }
+    });
+    console.log("course token is : ", courseToken);
     return courseToken;
 }
 

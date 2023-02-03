@@ -2,6 +2,7 @@ const {getAllCourseQuery, getCourseByNameQuery, getPurchasedCourseQuery, getAuth
 
 const getAllCourseController = async(req,res) => {
     try {
+        console.log(req.body);
         await getAllCourseQuery()
         .then((resp) => {
             res.status(200).json(resp);
@@ -51,6 +52,8 @@ const getAuthoredCourses = async(req, resp) => {
 
 const addCourseController = async(req,res)=>{
     try {
+        // console.log(req);
+        console.log(req.body);
         await addCourseQuery(req.body)
         .then((resp) => {
             res.status(200).json(resp);

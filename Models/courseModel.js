@@ -9,7 +9,7 @@ const courseSchema = new mongoose.Schema({
         type: String,
         required: true
     }, 
-    course_image:{
+    course_imageUrl:{
         type: String,
         required: true
     },

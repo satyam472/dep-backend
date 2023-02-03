@@ -45,26 +45,36 @@ const getCourseByNameQuery = async(body)=>{
 const addCourseQuery = async(body)=>{
     try{
         const address = "0xA404C8849C20997EE4ba3A4709976d7Aa3286398";
-        const tokenId = await getCourseNftToken(address, body.course_name, body.tutor_name);
+        console.log(address);
+        console.log(body);
+        const tokenId = await getCourseNftToken(address, body.course_name, body.tutor_name, function (err, result) {
+            if (err) {
+                console.log("error from callback func of getCourseNftToken : ", err);
+            }
+            else{
+                console.log("result from callback func of getCourseNftToken : ", result);
+            }
+        });
         console.log("tokenId from blockchain : ", tokenId);
         // const imageUrl = "https://ipfs.io/ipfs/" + cid + "/" + "1.png";
-
+        const courseImageUrl = "https://ipfs.io/ipfs/bafybeicmjtb7zl47oznczwuo7ks5zyhhzjrrgrpe4rwwis7eauziusj2we/1.png";
+        const tutorIconurl = "https://ipfs.io/ipfs/bafybeicmjtb7zl47oznczwuo7ks5zyhhzjrrgrpe4rwwis7eauziusj2we/1.png"
         let doc = {
             course_token: tokenId,
             course_name: body.course_name, 
-            image: body.image,
+            course_imageUrl: courseImageUrl,
             tutor_name: body.tutor_name, 
-            tutor_icon: body.tutor_icon
+            tutor_icon: tutorIconurl
         }
 
         await UserModel.updateOne({ wallet_address: body.address }, { $push: { purchased_courses: { token_id: tokenId } } });
         console.log(doc)
         const response = await CourseModel.create(doc);
         console.log(response)
-        return Promise.resolve({ status: true,response:response})
+        return Promise.resolve({ status: true, data:response})
     }
     catch(err){
-        return Promise.reject([500, 'Internal Server Error'])
+        return Promise.reject([500, 'Internal Server Error in addCourseQuery function'])
     }
 }
 
