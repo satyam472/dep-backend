@@ -99,17 +99,7 @@ module.exports = [
 			},
 			{
 				"internalType": "string",
-				"name": "_courseImageUrl",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
 				"name": "_tutorName",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "_tutorIconUrl",
 				"type": "string"
 			}
 		],
@@ -440,6 +430,30 @@ module.exports = [
 		"type": "function"
 	},
 	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_address",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_tokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "optCheckAccess",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
 		"inputs": [],
 		"name": "owner",
 		"outputs": [
@@ -530,6 +544,30 @@ module.exports = [
 				"internalType": "string",
 				"name": "",
 				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "userTokenAccess3d",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
 			}
 		],
 		"stateMutability": "view",

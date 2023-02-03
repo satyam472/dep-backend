@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const cors = require('cors')
 const mongoose = require('mongoose');
-const myContract = require("./helpers/web3")
+const myContract = require("./Helpers/web3")
 const dotenv = require("dotenv");
 dotenv.config();
 app.use(express.json());
