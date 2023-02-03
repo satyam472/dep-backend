@@ -1,8 +1,8 @@
 const express = require("express");
-const { checkVideoAccessController } = require("../Controllers/accessController")
+const { getVideoByToken, getPurchasedCourses } = require("../Controllers/accessController")
 const router = express.Router();
 
-router.post('/checkVideoAccess', checkVideoAccessController);
-// router.post('/checkVideoAccess', checkAccessController);
+router.post('/getVideo', getVideoByToken);
+router.post('/getPurchasedCourses', getPurchasedCourses);
 
 module.exports = router;

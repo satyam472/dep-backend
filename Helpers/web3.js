@@ -13,7 +13,14 @@ const getVideoAccessByToken = async(_address, _tokenId) => {
     return isAccess;
 }
 
+const getCourseNftToken = async(_address, _courseName, _tutorName) => {
+    const courseToken = await myContract.methods.createCourseNFT(_courseName, _tutorName).send({ from: _address });
+    console.log(courseToken);
+    return courseToken;
+}
+
 module.exports = { 
     myContract,
-    getVideoAccessByToken
+    getVideoAccessByToken,
+    getCourseNftToken
 };

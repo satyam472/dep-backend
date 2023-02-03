@@ -1,8 +1,20 @@
-const { getVideoAccessByTokenQuery } = require('../Queries/accessQuery')
+const { getVideoAccessByTokenQuery, getPurchasedCoursesQuery } = require('../Queries/accessQuery')
 
-const checkVideoAccessController = async(req,res) => {
+const getVideoByToken = async(req,res) => {
     try {
-        await getVideoAccessByTokenQuery(req.body.body)
+        await getVideoByTokenQuery(req.body.body)
+        .then((resp) => {
+            res.status(200).json(resp);
+        });
+        
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const getPurchasedCourses = async(req,res) => {
+    try {
+        await getPurchasedCoursesQuery(req.body.body)
         .then((resp) => {
             res.status(200).json(resp);
         });
@@ -13,5 +25,6 @@ const checkVideoAccessController = async(req,res) => {
 }
 
 module.exports = {
-    checkVideoAccessController
+    getVideoByToken,
+    getPurchasedCourses
 }

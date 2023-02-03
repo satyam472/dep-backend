@@ -1,11 +1,15 @@
 const mongoose = require("mongoose");
 
-const UserSchema = new mongoose.Schema({
+const courseSchema = new mongoose.Schema({
+    course_token :{
+        type: Number,
+        required: true
+    },
     course_name:{
         type: String,
         required: true
     }, 
-    image:{
+    course_image:{
         type: String,
         required: true
     },
@@ -44,6 +48,6 @@ const UserSchema = new mongoose.Schema({
         default: Date.now,
     }
 });
-const CourseModel = mongoose.model('course', UserSchema);
+const CourseModel = mongoose.model('course', courseSchema);
 
 module.exports = CourseModel;
