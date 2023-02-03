@@ -35,7 +35,7 @@ const getIdeaFromBlockchain = async(_key) => {
     return;
 }
 
-getIdeaFromBlockchain(1);
+// getIdeaFromBlockchain(1);
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, console.log("Server started at http://localhost:" + PORT))
