@@ -46,6 +46,9 @@ const addCourseQuery = async(body)=>{
     try{
         const address = "0xA404C8849C20997EE4ba3A4709976d7Aa3286398";
         const tokenId = await getCourseNftToken(address, body.course_name, body.tutor_name);
+        console.log("tokenId from blockchain : ", tokenId);
+        // const imageUrl = "https://ipfs.io/ipfs/" + cid + "/" + "1.png";
+
         let doc = {
             course_token: tokenId,
             course_name: body.course_name, 
