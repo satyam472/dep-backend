@@ -15,6 +15,26 @@ const UserSchema = new mongoose.Schema({
     password: {
         type: String,
     },
+    wallet_address: {
+        type: String,
+        required: true
+    },
+    authored_courses: [
+        {
+            token_id:{
+                type: Number,
+                required: true
+            }
+        }
+    ],
+    purchased_courses: [
+        {
+            token_id:{
+                type: Number,
+                required: true
+            }
+        }
+    ],
     date: {
         type: Date,
         default: Date.now,
