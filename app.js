@@ -26,23 +26,20 @@ app.use("/access", require("./Routes/accessRoute"));
 
 const getIdeaFromBlockchain = async(_key) => {
     // console.log(myContract);
-    const idea = await myContract.methods.tokenURI(_key).call((error, result) => {
-        if (error) {
-            console.error("error in myContract.methods.tokenURI : ", error);
-        } else {
-            console.log("result from callback function of myContract.methods.tokenURI : ", result);
-        }
-    });
-    let encodedString = idea.split(",")[1];
-    // console.log(encodedString);
-    // let decodedString = Buffer.from(encodedString, "base64").toString("utf8");
-    let decodedString = Buffer.from(encodedString, "base64");
-    console.log(decodedString);    
-    console.log(decodedString.toString("utf8"));
-    return;
+    try {
+        const idea = await myContract.methods.tokenURI(_key).call()
+        console.log("result from tokenURI: ", idea);
+        let encodedString = idea.split(",")[1];
+        let decodedString = Buffer.from(encodedString, "base64");
+        console.log(decodedString);    
+        console.log(decodedString.toString("utf8"));
+    } catch (error) {
+        console.error("error in tokenURI: ", error);
+    }
+    
 }
 
-getIdeaFromBlockchain(1);
+getIdeaFromBlockchain(3);
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, console.log("Server started at http://localhost:" + PORT))

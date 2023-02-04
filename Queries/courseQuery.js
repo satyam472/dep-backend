@@ -44,17 +44,16 @@ const getCourseByNameQuery = async(body)=>{
 
 const addCourseQuery = async(body)=>{
     try{
-        const address = "0xA404C8849C20997EE4ba3A4709976d7Aa3286398";
-        console.log(address);
+        // const address = "0xA404C8849C20997EE4ba3A4709976d7Aa3286398";
+        // console.log(address);
         console.log(body);
-        const tokenId = await getCourseNftToken(address, body.course_name, body.tutor_name, function (err, result) {
-            if (err) {
-                console.log("error from callback func of getCourseNftToken : ", err);
-            }
-            else{
-                console.log("result from callback func of getCourseNftToken : ", result);
-            }
-        });
+        var tokenId;
+        try {
+            tokenId = await getCourseNftToken(body.course_name, body.tutor_name);
+            console.log("result from getCourseNftToken: ", tokenId);
+        } catch (error) {
+            console.error("error in getCourseNftToken: ", error);
+        }
         console.log("tokenId from blockchain : ", tokenId);
         // const imageUrl = "https://ipfs.io/ipfs/" + cid + "/" + "1.png";
         const courseImageUrl = "https://ipfs.io/ipfs/bafybeicmjtb7zl47oznczwuo7ks5zyhhzjrrgrpe4rwwis7eauziusj2we/1.png";
