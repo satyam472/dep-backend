@@ -1,5 +1,6 @@
 const lighthouse = require('@lighthouse-web3/sdk');
 const CourseModel = require("../Models/courseModel");
+const { getVideoNftToken } = require("../Helpers/web3");
 
 const uploadVideoToLighhouseQuery = async() => {
     try{
@@ -16,26 +17,47 @@ const uploadVideoToLighhouseQuery = async() => {
 }
 const addVideoQuery = async(body) => {
     try{
-        const uploadVideo = await uploadVideoToLighhouseQuery();
-        if(uploadVideo.status){
-            let video_url = `https://ipfs.io/ipfs/${uploadVideo.response.data.Hash}`
-            let moduleData = {
-                module_name: body.module_name,
-                videos_of_module: [
-                    {
-                        video_name: body.video_name,
-                        video: video_url,
-                        video_image: body.video_image 
-                    }
-                ]
-    
+        const videoImageResp = await uploadToLighhouseQuery(body.video_image);
+        const uploadVideo = await uploadToLighhouseQuery(body.video);
+
+        if(videoImageResp.status && uploadVideo.status){
+            let videoImageurl = `https://ipfs.io/ipfs/${videoImageResp.response.data.Hash}`;
+            let videoUrl = `https://ipfs.io/ipfs/${uploadVideo.response.data.Hash}`;
+
+            var tokenId;
+            try {
+                tokenId = await getVideoNftToken(body.course_token, body.module_name, body.video_name, videoImageurl, videoUrl, body.video_price);
+                console.log("result from getCourseNftToken: ", tokenId);
+            } catch (error) {
+                console.error("error in getCourseNftToken: ", error);
             }
-            const response = await CourseModel.updateOne({ course_name:body.course_name}, { $push: { modules: moduleData} })
-            return Promise.resolve({status:true,response:response});
+            console.log("tokenId from blockchain : ", tokenId);
+
+            let videoData = {
+                video_token: tokenId,
+                video_name: body.video_name,
+                video_imageUrl: videoImageurl,
+                video_url: videoUrl,
+                video_price: body.video_price   
+            }
+            console.log(videoData);
+            // const response = await CourseModel.updateOne({ course_token:body.course_token }, { module_name:body.module_name }, { $push: { videos_of_module: videoData} });
+            const response = await CourseModel.updateOne(
+                { 
+                    course_token: body.course_token, 
+                    'modules.module_name': body.module_name 
+                }, 
+                { 
+                    $push: { 
+                    'modules.$.videos_of_module': videoData
+                    } 
+                }
+            );
+            return Promise.resolve({ status: true, response:response})
         }
         else{
             throw error;
-        }
+        }        
     }
     catch(err){
         return Promise.reject([500, 'Internal Server Error'])

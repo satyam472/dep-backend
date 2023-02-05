@@ -27,14 +27,20 @@ const courseSchema = new mongoose.Schema({
                 type: String,
             },
             videos_of_module:[{ 
+                video_token:{
+                    type: String,
+                }, 
                 video_name:{
                     type: String,
                 }, 
-                video:{
+                video_imageUrl:{
                     type: String,
                 },
-                video_image:{
+                video_url:{
                     type: String,
+                },
+                video_price:{
+                    type: Number,
                 },
                 date: {
                     type: Date,

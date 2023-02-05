@@ -74,7 +74,7 @@ const addCourseQuery = async(body)=>{
         console.log(body);
         var tokenId;
         try {
-            tokenId = await getCourseNftToken(body.course_name, body.tutor_name);
+            tokenId = await getCourseNftToken(body.course_name, body.tutor_name, body.course_price);
             console.log("result from getCourseNftToken: ", tokenId);
         } catch (error) {
             console.error("error in getCourseNftToken: ", error);
@@ -111,11 +111,31 @@ const addCourseQuery = async(body)=>{
     }
 }
 
+const addModuleQuery = async(body)=>{
+    try{
+        // const address = "0xA404C8849C20997EE4ba3A4709976d7Aa3286398";
+        // console.log(address);
+        console.log(body);
+
+        const response = await CourseModel.updateOne(
+            { course_token: body.course_token }, 
+            { $push: { modules: { module_name: body.module_name, videos_of_module: [] } } }
+        );
+
+        console.log(response)
+        return Promise.resolve({ status: true, response:response})
+    }
+    catch(err){
+        return Promise.reject([500, 'Internal Server Error in addModuleQuery function'])
+    }
+}
+
 module.exports = {
     uploadToLighhouseQuery,
     getAllCourseQuery,
     getCourseByNameQuery,
     getPurchasedCourseQuery,
     getAuthoredCourseQuery,
-    addCourseQuery
+    addCourseQuery,
+    addModuleQuery
 }

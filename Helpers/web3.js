@@ -37,7 +37,20 @@ const getVideoAccessByToken = async(_address, _tokenId) => {
     return isAccess;
 }
 
-const getCourseNftToken = async(_courseName, _tutorName) => {
+const getCourseNftToken = async(_courseName, _tutorName, _coursePrice) => {
+    var courseToken;
+    try {
+        const result = await myContract.methods.createCourseNFT(_courseName, _tutorName, _coursePrice).send({ from: myAddress });
+        console.log(result);
+        courseToken = result.events.Transfer.returnValues.tokenId;
+        console.log("course tokenId from createCourseNFT: ", courseToken);
+    } catch (error) {
+        console.error("error in createCourseNFT: ", error);
+    }
+    return courseToken;
+}
+
+const getVideoNftToken = async(_courseName, _tutorName) => {
     var courseToken;
     try {
         const result = await myContract.methods.createCourseNFT(_courseName, _tutorName).send({ from: myAddress });
@@ -61,9 +74,9 @@ const checkOwnership = async(_tokenId) => {
     }
 }
 
-const checkIfPurchasedCourse = async(_address, _tokenId) => {
+const checkIfPurchasedCourse = async(_courseToken, _moduleName, _videoName, _videoImageUrl, _videoUrl, _videoPrice) => {
     try{
-        const isPurchased = await myContract.methods.optCheckAccess(_address, _tokenId).call();
+        const isPurchased = await myContract.methods.optCheckAccess(_courseToken, _moduleName, _videoName, _videoImageUrl, _videoUrl, _videoPrice).call();
         console.log("result of optCheckAccess: ", _tokenId, " is purchased:", isPurchased, " by the ", _address);
         return owner;
     } catch(err){
@@ -76,5 +89,6 @@ module.exports = {
     myContract,
     checkIfPurchasedCourse,
     getCourseNftToken,
+    getVideoNftToken,
     checkOwnership
 };
