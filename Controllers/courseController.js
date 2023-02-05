@@ -1,4 +1,4 @@
-const {getAllCourseQuery, getCourseByNameQuery, getPurchasedCourseQuery, getAuthoredCourseQuery, addCourseQuery, addModuleQuery } = require('../Queries/courseQuery')
+const {getAllCourseQuery, getCourseByNameQuery, getPurchasedCourseQuery, getAuthoredCourseQuery, addCourseQuery, addModuleQuery, purchaseCourseQuery } = require('../Queries/courseQuery')
 
 const getAllCourseController = async(req,res) => {
     try {
@@ -75,11 +75,22 @@ const addModule = async(req,res)=>{
     }
 }
 
+const purchaseCourse = async(req,res)=>{
+    try {
+        const resp = await purchaseCourseQuery(req.body)
+        res.status(200).json(resp);
+    } catch (error) {
+        res.json(error);
+    }
+}
+
+
 module.exports = {
     getAllCourseController,
     getCourseByNameController,
     getPurchasedCourses,
     getAuthoredCourses,
     addCourseController,
-    addModule
+    addModule,
+    purchaseCourse
 }

@@ -85,10 +85,36 @@ const checkIfPurchasedCourse = async(_courseToken, _moduleName, _videoName, _vid
     }
 }
 
+const purchaseVideo = async(_address, _token) => {
+    try{
+        // const isPurchased = await myContract.methods.buyCourseVideoFor(_address, _token).call();
+        await myContract.methods.buyCourseVideoFor(_address, _token).send({ from: _address, value: web3.utils.toWei(videoPrice[_tokenId].toString(), 'ether') });
+        // console.log("result of buyCourseVideoFor: ", _tokenId, " is purchased:", isPurchased, " by the ", _address);
+        return true;
+    } catch(err){
+        console.error("error in optCheckAccess function : ", err);
+        return Promise.reject(err);
+    }
+}
+
+const purchaseCourse = async(_address, _token) => {
+    try{
+        // const isPurchased = await myContract.methods.buyCourseVideoFor(_address, _token).call();
+        await myContract.methods.buyCourseFor(_address, _token).send({ from: _address, value: web3.utils.toWei(coursePrice[_tokenId].toString(), 'ether') });
+        // console.log("result of buyCourseVideoFor: ", _tokenId, " is purchased:", isPurchased, " by the ", _address);
+        return true;
+    } catch(err){
+        console.error("error in optCheckAccess function : ", err);
+        return Promise.reject(err);
+    }
+}
+
 module.exports = { 
     myContract,
     checkIfPurchasedCourse,
     getCourseNftToken,
     getVideoNftToken,
-    checkOwnership
+    checkOwnership,
+    purchaseVideo,
+    purchaseCourse
 };

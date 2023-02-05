@@ -1,6 +1,6 @@
 const lighthouse = require('@lighthouse-web3/sdk');
 const CourseModel = require("../Models/courseModel");
-const { getVideoNftToken } = require("../Helpers/web3");
+const { getVideoNftToken, purchaseVideo } = require("../Helpers/web3");
 
 const uploadVideoToLighhouseQuery = async() => {
     try{
@@ -80,7 +80,18 @@ const getVideoQuery = async(req)=>{
     }
 }
 
+const purchaseVideoQuery = async(body)=>{
+    try{
+        const response = await purchaseVideo(body.address, body.token_id);
+        return Promise.resolve({ status: true,response:response})
+    }
+    catch(err){
+        return Promise.reject([500, 'Internal Server Error'])
+    }
+}
+
 module.exports = {
     addVideoQuery,
-    getVideoQuery
+    getVideoQuery,
+    purchaseVideoQuery
 }

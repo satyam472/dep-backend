@@ -1,7 +1,7 @@
 const CourseModel = require("../Models/courseModel");
 const UserModel = require("../Models/userModel");
 const lighthouse = require('@lighthouse-web3/sdk');
-const { getCourseNftToken } = require("../Helpers/web3")
+const { getCourseNftToken, purchaseCourse } = require("../Helpers/web3")
 
 const getAllCourseQuery = async(body) => {
     try{
@@ -30,7 +30,18 @@ const getPurchasedCourseQuery = async(body)=>{
 
 const getAuthoredCourseQuery = async(body)=>{
     try{
-        const response = await CourseModel.find({course_name:body.course_name});
+        // const response = await CourseModel.find({course_name:body.course_name});
+        const user = await User.findOne({ wallet_address: body.address });
+        const authored_courses = user.authored_courses;
+        for (let i = 0; i < authored_courses.length; i++) {
+            console.log(authored_courses[i].token_id);
+            try {
+                tokenId = await getCourseNftToken(body.course_name, body.tutor_name, body.course_price);
+                console.log("result from getCourseNftToken: ", tokenId);
+            } catch (error) {
+                console.error("error in getCourseNftToken: ", error);
+            }
+        }
         return Promise.resolve({ status: true,response:response})
     }
     catch(err){
@@ -130,6 +141,17 @@ const addModuleQuery = async(body)=>{
     }
 }
 
+const purchaseCourseQuery = async(body)=>{
+    try{
+        const response = await purchaseCourse(body.address, body.token_id);
+        await UserModel.updateOne({ course_token: body.token_id }, { $push: { purchased_courses: { token_id: tokenId } } });
+        return Promise.resolve({ status: true,response:response})
+    }
+    catch(err){
+        return Promise.reject([500, 'Internal Server Error'])
+    }
+}
+
 module.exports = {
     uploadToLighhouseQuery,
     getAllCourseQuery,
@@ -137,5 +159,6 @@ module.exports = {
     getPurchasedCourseQuery,
     getAuthoredCourseQuery,
     addCourseQuery,
-    addModuleQuery
+    addModuleQuery,
+    purchaseCourseQuery
 }
