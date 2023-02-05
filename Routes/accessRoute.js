@@ -1,8 +1,8 @@
 const express = require("express");
-const { getVideoByToken, getPurchasedCourses } = require("../Controllers/accessController")
+const { checkOwnership, getUserRole } = require("../Controllers/accessController")
 const router = express.Router();
 
-router.post('/getVideo', getVideoByToken);
-router.post('/getPurchasedCourses', getPurchasedCourses);
+router.post('/checkOwnership', checkOwnership);
+router.post('/getUserRole', getUserRole);
 
 module.exports = router;

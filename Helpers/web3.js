@@ -10,6 +10,8 @@ const smartContractABI = require("./contractAbi");
 // usse bhi latest : 0xa2e397AE3B88357bC46DC338ca41956DDd630649
 // : 0xDBea783c04781B497f29818f28A86312d6A04088
 // 0x64f6DEd1571f2b8Ed1dC51Ed804Ef3B0DcEc0821
+// goerli contract address : 0xac1E955633Ba045A065BE038050484042627C7EE
+// 0x167F3D7d19ab58DA03cAd4Da2849d78F8EC660a6
 
 const myAddress = "0xA404C8849C20997EE4ba3A4709976d7Aa3286398";
 
@@ -18,12 +20,15 @@ dotenv.config();
 const privatekey = process.env.PRIVATE_KEY;
 console.log(privatekey);
 const filecoinRpcUrl = "https://api.hyperspace.node.glif.io/rpc/v1";
+// const infura_api_key = process.env.INFURA_API_KEY;
+
+// const infura_rpc_url = "https://goerli.infura.io/v3/" + infura_api_key;
 var provider = new Provider(privatekey, filecoinRpcUrl);
 var web3 = new Web3(provider);
 // const web3 = new Web3("https://api.hyperspace.node.glif.io/rpc/v1"); 
 
 // instantiate contract object
-const smartContractAddress =  "0x64f6DEd1571f2b8Ed1dC51Ed804Ef3B0DcEc0821"; // your smart contract address;
+const smartContractAddress =  "0x167F3D7d19ab58DA03cAd4Da2849d78F8EC660a6"; // your smart contract address;
 const myContract = new web3.eth.Contract(smartContractABI, smartContractAddress);
 
 const getVideoAccessByToken = async(_address, _tokenId) => {
@@ -36,6 +41,7 @@ const getCourseNftToken = async(_courseName, _tutorName) => {
     var courseToken;
     try {
         const result = await myContract.methods.createCourseNFT(_courseName, _tutorName).send({ from: myAddress });
+        console.log(result);
         courseToken = result.events.Transfer.returnValues.tokenId;
         console.log("course tokenId from createCourseNFT: ", courseToken);
     } catch (error) {
@@ -44,8 +50,31 @@ const getCourseNftToken = async(_courseName, _tutorName) => {
     return courseToken;
 }
 
+const checkOwnership = async(_tokenId) => {
+    try{
+        const owner = await myContract.methods.getNftOwner(_tokenId).call();
+        console.log("owner of tokenId: ", _tokenId, " is ", owner);
+        return owner;
+    } catch(err){
+        console.error("error in getNftOwner function : ", err);
+        return Promise.reject(err);
+    }
+}
+
+const checkIfPurchasedCourse = async(_address, _tokenId) => {
+    try{
+        const isPurchased = await myContract.methods.optCheckAccess(_address, _tokenId).call();
+        console.log("result of optCheckAccess: ", _tokenId, " is purchased:", isPurchased, " by the ", _address);
+        return owner;
+    } catch(err){
+        console.error("error in optCheckAccess function : ", err);
+        return Promise.reject(err);
+    }
+}
+
 module.exports = { 
     myContract,
-    getVideoAccessByToken,
-    getCourseNftToken
+    checkIfPurchasedCourse,
+    getCourseNftToken,
+    checkOwnership
 };

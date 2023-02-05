@@ -3,11 +3,8 @@ const {getAllCourseQuery, getCourseByNameQuery, getPurchasedCourseQuery, getAuth
 const getAllCourseController = async(req,res) => {
     try {
         console.log(req.body);
-        await getAllCourseQuery()
-        .then((resp) => {
-            res.status(200).json(resp);
-        });
-        
+        const resp = await getAllCourseQuery(req.body)
+        res.status(200).json(resp);        
     } catch (error) {
         console.log(error);
     }
