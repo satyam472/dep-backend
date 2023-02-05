@@ -75,11 +75,11 @@ const checkOwnership = async(_tokenId) => {
     }
 }
 
-const checkIfPurchasedCourse = async(_courseToken, _moduleName, _videoName, _videoImageUrl, _videoUrl, _videoPrice) => {
+const checkIfPurchasedCourse = async(_address, _tokenId) => {
     try{
-        const isPurchased = await myContract.methods.optCheckAccess(_courseToken, _moduleName, _videoName, _videoImageUrl, _videoUrl, _videoPrice).call();
+        const isPurchased = await myContract.methods.optCheckAccess(_address, _tokenId).call();
         console.log("result of optCheckAccess: ", _tokenId, " is purchased:", isPurchased, " by the ", _address);
-        return owner;
+        return isPurchased;
     } catch(err){
         console.error("error in optCheckAccess function : ", err);
         return Promise.reject(err);

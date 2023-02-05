@@ -10,7 +10,7 @@ const getAllCourseQuery = async(body) => {
         const limit = body.numOfCourses;
         const response = await CourseModel.find({}, { course_token: 1, course_name: 1, course_image:1, tutor_name: 1, tutor_icon:1 }).limit(limit);
         console.log(response);
-        return Promise.resolve({status:true, data:response});
+        return Promise.resolve({status:true, response:response});
     }
     catch(err){
         console.log(err);
@@ -20,8 +20,28 @@ const getAllCourseQuery = async(body) => {
 
 const getPurchasedCourseQuery = async(body)=>{
     try{
-        const response = await CourseModel.find({course_name:body.course_name});
-        return Promise.resolve({ status: true,response:response})
+        // const response = await CourseModel.find({course_name:body.course_name});
+        const user = await User.findOne({ wallet_address: body.address });
+        if (!user) {
+            return Promise.reject([404, 'User not found']);
+        }
+        const purchaseCourses = user.purchased_courses;
+        const verifiedPurchasedCourses = [];
+        for (let i = 0; i < purchaseCourses.length; i++) {
+            const tokenId = purchaseCourses[i].token_id
+            console.log(tokenId);
+            try {
+                if (await checkIfPurchasedCourse(body.address, tokenId)){
+                    verifiedPurchasedCourses.push(tokenId);
+                }
+            } catch (error) {
+                console.error("error in checkIfPurchasedCourse inside getPurchasedCourseQuery: ", error);
+                return Promise.reject([500, 'checkIfPurchasedCourse in getPurchasedCourseQuery failed for tokenId : ', tokenId]);
+            }
+        }
+        const response = await CourseModel.find({ course_token: { $in: verifiedPurchasedCourses } });
+        console.log(response);
+        return Promise.resolve({ status: true, response:response})
     }
     catch(err){
         return Promise.reject([500, 'Internal Server Error'])
@@ -32,17 +52,27 @@ const getAuthoredCourseQuery = async(body)=>{
     try{
         // const response = await CourseModel.find({course_name:body.course_name});
         const user = await User.findOne({ wallet_address: body.address });
-        const authored_courses = user.authored_courses;
-        for (let i = 0; i < authored_courses.length; i++) {
-            console.log(authored_courses[i].token_id);
+        if (!user) {
+            return Promise.reject([404, 'User not found']);
+        }
+        const authoredCourses = user.authored_courses;
+        const verifiedAuthoredCourses = [];
+        for (let i = 0; i < authoredCourses.length; i++) {
+            const tokenId = authoredCourses[i].token_id
+            console.log(tokenId);
             try {
-                tokenId = await getCourseNftToken(body.course_name, body.tutor_name, body.course_price);
-                console.log("result from getCourseNftToken: ", tokenId);
+                const owner = await checkOwnership(tokenId);
+                if (body.address == owner){
+                    verifiedAuthoredCourses.push(tokenId);
+                }
             } catch (error) {
-                console.error("error in getCourseNftToken: ", error);
+                console.error("error in checkOwnership inside getAuthoredCourseQuery: ", error);
+                return Promise.reject([500, 'checkOwnership in getAuthoredCourseQuery failed for tokenId : ', tokenId]);
             }
         }
-        return Promise.resolve({ status: true,response:response})
+        const response = await CourseModel.find({ course_token: { $in: verifiedAuthoredCourses } });
+        console.log(response);
+        return Promise.resolve({ status: true, response:response})
     }
     catch(err){
         return Promise.reject([500, 'Internal Server Error'])
