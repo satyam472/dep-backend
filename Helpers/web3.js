@@ -12,6 +12,7 @@ const smartContractABI = require("./contractAbi");
 // 0x64f6DEd1571f2b8Ed1dC51Ed804Ef3B0DcEc0821
 // goerli contract address : 0xac1E955633Ba045A065BE038050484042627C7EE
 // 0x167F3D7d19ab58DA03cAd4Da2849d78F8EC660a6
+// 0x9348652e61c2a4Db254F800f0030C11ec273cE80
 
 const myAddress = "0xA404C8849C20997EE4ba3A4709976d7Aa3286398";
 
@@ -28,7 +29,7 @@ var web3 = new Web3(provider);
 // const web3 = new Web3("https://api.hyperspace.node.glif.io/rpc/v1"); 
 
 // instantiate contract object
-const smartContractAddress =  "0x167F3D7d19ab58DA03cAd4Da2849d78F8EC660a6"; // your smart contract address;
+const smartContractAddress =  "0x9348652e61c2a4Db254F800f0030C11ec273cE80"; // your smart contract address;
 const myContract = new web3.eth.Contract(smartContractABI, smartContractAddress);
 
 const getVideoAccessByToken = async(_address, _tokenId) => {
