@@ -17,7 +17,7 @@ const courseSchema = new mongoose.Schema({
         type: String,
         required: true
     }, 
-    tutor_icon:{
+    tutor_iconUrl:{
         type: String,
         required: true
     },

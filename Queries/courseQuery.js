@@ -113,39 +113,31 @@ const addCourseQuery = async(body)=>{
         // const address = "0xA404C8849C20997EE4ba3A4709976d7Aa3286398";
         // console.log(address);
         console.log(body);
+        const { course_name, tutor_name, course_price, course_imageUrl, tutor_iconUrl } = body;
+        console.log(course_name);
         var tokenId;
         try {
-            tokenId = await getCourseNftToken(body.course_name, body.tutor_name, body.course_price);
+            tokenId = await getCourseNftToken(course_name, tutor_name, course_price);
             console.log("result from getCourseNftToken: ", tokenId);
         } catch (error) {
             console.error("error in getCourseNftToken: ", error);
         }
         console.log("tokenId from blockchain : ", tokenId);
-        console.log(body.course_image);
-        const courseImageResp = await uploadToLighhouseQuery(body.course_image);
-        const tutorIconResp = await uploadToLighhouseQuery(body.tutor_icon);
 
-        if(courseImageResp.status && tutorIconResp.status){
-            let courseImageurl = `https://ipfs.io/ipfs/${courseImageResp.response.data.Hash}`;
-            let tutorIconUrl = `https://ipfs.io/ipfs/${tutorIconResp.response.data.Hash}`;
-
-            let doc = {
-                course_token: tokenId,
-                course_name: body.course_name, 
-                course_imageUrl: courseImageurl,
-                tutor_name: body.tutor_name, 
-                tutor_icon: tutorIconUrl
-            }
-
-            await UserModel.updateOne({ wallet_address: body.address }, { $push: { authored_courses: { token_id: tokenId } } });
-            console.log(doc)
-            const response = await CourseModel.create(doc);
-            console.log(response)
-            return Promise.resolve({ status: true, response:response})
+        let doc = {
+            course_token: tokenId,
+            course_name: body.course_name, 
+            course_imageUrl: course_imageUrl,
+            tutor_name: tutor_name, 
+            tutor_iconUrl: tutor_iconUrl
         }
-        else{
-            throw error;
-        }
+
+        const address = "0xa404c8849c20997ee4ba3a4709976d7aa3286398";
+        await UserModel.updateOne({ wallet_address: address }, { $push: { authored_courses: { token_id: tokenId } } });
+        console.log(doc)
+        const response = await CourseModel.create(doc);
+        console.log(response)
+        return Promise.resolve({ status: true, response:response})
     }
     catch(err){
         return Promise.reject([500, 'Internal Server Error in addCourseQuery function'])

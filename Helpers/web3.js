@@ -54,12 +54,12 @@ const getCourseNftToken = async(_courseName, _tutorName, _coursePrice) => {
 const getVideoNftToken = async(_courseName, _tutorName) => {
     var courseToken;
     try {
-        const result = await myContract.methods.createCourseNFT(_courseName, _tutorName).send({ from: myAddress });
+        const result = await myContract.methods.createVideoNFT(_courseName, _tutorName).send({ from: myAddress });
         console.log(result);
         courseToken = result.events.Transfer.returnValues.tokenId;
-        console.log("course tokenId from createCourseNFT: ", courseToken);
+        console.log("course tokenId from createVideoNFT: ", courseToken);
     } catch (error) {
-        console.error("error in createCourseNFT: ", error);
+        console.error("error in createVideoNFT: ", error);
     }
     return courseToken;
 }
